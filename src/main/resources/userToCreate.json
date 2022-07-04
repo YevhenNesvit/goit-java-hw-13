@@ -1,0 +1,22 @@
+{
+  "name": "Yevhen Nesvit",
+  "username": "Nesweet",
+  "email": "yevhen.nesvit@gmail.com",
+  "address": {
+    "street": "Vygovskogo",
+    "suite": "Apt. 108",
+    "city": "Sumy",
+    "zipcode": "40004",
+    "geo": {
+      "lat": "50.922227",
+      "lng": "34.782811"
+    }
+  },
+  "phone": "380-95-92-92-360",
+  "website": "yevhen.com",
+  "company": {
+    "name": "Milanello",
+    "catchPhrase": "Hali-Gali sapogi-sandali pognali",
+    "bs": "shoes market"
+  }
+}
