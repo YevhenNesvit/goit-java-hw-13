@@ -9,7 +9,7 @@ public class Main {
 //        HttpClient.getAllUsers();
 //        HttpClient.getUserById();
 //        HttpClient.getUserByUserName();
-        HttpClient.getCommentsToLastPost();
-//        HttpClient.getToDos();
+//        HttpClient.writeCommentsToFile();
+        HttpClient.getToDos();
     }
 }

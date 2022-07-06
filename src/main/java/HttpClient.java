@@ -1,12 +1,19 @@
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.reflect.TypeToken;
+
 import java.io.*;
 
+import java.lang.reflect.Type;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.nio.file.Files;
+import java.util.List;
 
 public class HttpClient {
     private static final String TEST_USERS = "https://jsonplaceholder.typicode.com/users/";
     private static final String TEST_POSTS = "https://jsonplaceholder.typicode.com/posts/";
+    static Utils utils = new Utils();
 
     public static void createUser() throws IOException {
         URL url = new URL(TEST_USERS);
@@ -83,7 +90,7 @@ public class HttpClient {
         System.out.println("DELETE response code: " + responseCode);
     }
 
-    public static void getAllUsers() throws IOException {
+    public static List<User> getAllUsers() throws IOException {
         URL url = new URL(TEST_USERS);
         HttpURLConnection connection = (HttpURLConnection) url.openConnection();
         connection.setRequestMethod("GET");
@@ -91,24 +98,25 @@ public class HttpClient {
 
         int responseCode = connection.getResponseCode();
         System.out.println("GET response code: " + responseCode);
+        StringBuffer response = new StringBuffer();
         if (responseCode == HttpURLConnection.HTTP_OK) {
             BufferedReader in =
                     new BufferedReader(
                             new InputStreamReader(connection.getInputStream()));
             String inputLine;
-            StringBuffer response = new StringBuffer();
             while ((inputLine = in.readLine()) != null) {
                 response.append(inputLine);
             }
             in.close();
-            System.out.println(response);
+//            System.out.println(response);
         } else {
             System.out.println("GET request not worked");
         }
+        return utils.getMultipleUsers(response);
     }
 
     public static User getUserById() throws IOException {
-        int userId = 4;
+        int userId = 2;
         URL url = new URL(String.format(TEST_USERS + "?id=%d", userId));
         HttpURLConnection connection = (HttpURLConnection) url.openConnection();
         connection.setRequestMethod("GET");
@@ -129,10 +137,7 @@ public class HttpClient {
         } else {
             System.out.println("GET request not worked");
         }
-
-        User userById = new User();
-        Utils utils = new Utils();
-        return utils.userToObj(response, userById);
+        return utils.userToObj(response);
     }
 
     public static User getUserByUserName() throws IOException {
@@ -158,12 +163,10 @@ public class HttpClient {
             System.out.println("GET request not worked");
         }
 
-        User userByName = new User();
-        Utils utils = new Utils();
-        return utils.userToObj(response, userByName);
+        return utils.userToObj(response);
     }
 
-    public static void getCommentsToLastPost() throws IOException {
+    public static List<Comment> writeCommentsToFile() throws IOException {
         int userId = 2;
         Utils utils = new Utils();
         int maxId = utils.getLastPost(TEST_USERS, userId);
@@ -188,10 +191,11 @@ public class HttpClient {
         } else {
             System.out.println("GET request not worked");
         }
-        utils.toJsonWriter(userId, maxId, response);
+        utils.createJsonFile(userId, maxId, response);
+        return utils.getMultipleComments(response);
     }
 
-    public static void getToDos() throws IOException {
+    public static List<ToDo> getToDos() throws IOException {
         int userId = 2;
         URL url = new URL(String.format(TEST_USERS + userId + "/todos?completed=%b", false));
         HttpURLConnection connection = (HttpURLConnection) url.openConnection();
@@ -200,19 +204,19 @@ public class HttpClient {
 
         int responseCode = connection.getResponseCode();
         System.out.println("GET response code: " + responseCode);
+        StringBuffer response = new StringBuffer();
         if (responseCode == HttpURLConnection.HTTP_OK) {
             BufferedReader in =
                     new BufferedReader(
                             new InputStreamReader(connection.getInputStream()));
             String inputLine;
-            StringBuffer response = new StringBuffer();
             while ((inputLine = in.readLine()) != null) {
                 response.append(inputLine);
             }
             in.close();
-            System.out.println(response);
         } else {
             System.out.println("GET request not worked");
         }
+        return utils.getMultipleToDos(response);
     }
 }
